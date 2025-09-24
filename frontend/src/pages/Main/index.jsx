@@ -2,6 +2,7 @@ import React from "react";
 import PasswordModal, { usePasswordModal } from "@/components/Modals/Password";
 import { FullScreenLoader } from "@/components/Preloader";
 import Home from "./Home";
+import HKDSEHub from "../HKDSEHub";
 import DefaultChatContainer from "@/components/DefaultChat";
 import { isMobile } from "react-device-detect";
 import Sidebar, { SidebarMobileHeader } from "@/components/Sidebar";
@@ -18,7 +19,7 @@ export default function Main() {
   return (
     <div className="w-screen h-screen overflow-hidden bg-theme-bg-container flex">
       {!isMobile ? <Sidebar /> : <SidebarMobileHeader />}
-      {!!user && user?.role !== "admin" ? <DefaultChatContainer /> : <Home />}
+      {!!user && user?.role === "default" ? <HKDSEHub /> : <Home />}
     </div>
   );
 }

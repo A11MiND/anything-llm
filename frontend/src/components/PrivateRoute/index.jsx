@@ -19,12 +19,13 @@ function useIsAuthenticated() {
 
   useEffect(() => {
     const validateSession = async () => {
+      const systemKeys = await System.keys();
       const {
         MultiUserMode,
         RequiresAuth,
         LLMProvider = null,
         VectorDB = null,
-      } = await System.keys();
+      } = systemKeys || {};
 
       setMultiUserMode(MultiUserMode);
 
@@ -35,7 +36,8 @@ function useIsAuthenticated() {
         !LLMProvider &&
         !VectorDB
       ) {
-        setShouldRedirectToOnboarding(true);
+        // Skip onboarding and allow access to the system
+        setShouldRedirectToOnboarding(false);
         setIsAuthed(true);
         return;
       }
@@ -58,23 +60,33 @@ function useIsAuthenticated() {
         return;
       }
 
-      const localUser = localStorage.getItem(AUTH_USER);
-      const localAuthToken = localStorage.getItem(AUTH_TOKEN);
-      if (!localUser || !localAuthToken) {
-        setIsAuthed(false);
+      // Multi-user mode check
+      if (MultiUserMode) {
+        // If no auth is required in multi-user mode, allow access
+        if (!RequiresAuth) {
+          setIsAuthed(true);
+          return;
+        }
+
+        const localUser = localStorage.getItem(AUTH_USER);
+        const localAuthToken = localStorage.getItem(AUTH_TOKEN);
+        if (!localUser || !localAuthToken) {
+          setIsAuthed(false);
+          return;
+        }
+
+        const isValid = await validateSessionTokenForUser();
+        if (!isValid) {
+          localStorage.removeItem(AUTH_USER);
+          localStorage.removeItem(AUTH_TOKEN);
+          localStorage.removeItem(AUTH_TIMESTAMP);
+          setIsAuthed(false);
+          return;
+        }
+
+        setIsAuthed(true);
         return;
       }
-
-      const isValid = await validateSessionTokenForUser();
-      if (!isValid) {
-        localStorage.removeItem(AUTH_USER);
-        localStorage.removeItem(AUTH_TOKEN);
-        localStorage.removeItem(AUTH_TIMESTAMP);
-        setIsAuthed(false);
-        return;
-      }
-
-      setIsAuthed(true);
     };
     validateSession();
   }, []);
@@ -139,7 +151,7 @@ export default function PrivateRoute({ Component }) {
   if (isAuthd === null) return <FullScreenLoader />;
 
   if (shouldRedirectToOnboarding) {
-    return <Navigate to="/onboarding" />;
+    return <Navigate to={paths.onboarding.home()} />;
   }
 
   return isAuthd ? (

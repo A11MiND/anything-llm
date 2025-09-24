@@ -101,7 +101,7 @@ const TRANSLATIONS = {
   },
   login: {
     "multi-user": {
-      welcome: "歡迎使用",
+      welcome: "歡迎使用 (Live Reload Test)",
       "placeholder-username": "使用者名稱",
       "placeholder-password": "密碼",
       login: "登入",

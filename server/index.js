@@ -16,6 +16,7 @@ const { embedManagementEndpoints } = require("./endpoints/embedManagement");
 const { getVectorDbClass } = require("./utils/helpers");
 const { adminEndpoints } = require("./endpoints/admin");
 const { inviteEndpoints } = require("./endpoints/invite");
+const { authEndpoints } = require("./endpoints/auth");
 const { utilEndpoints } = require("./endpoints/utils");
 const { developerEndpoints } = require("./endpoints/api");
 const { extensionEndpoints } = require("./endpoints/extensions");
@@ -51,6 +52,13 @@ if (!!process.env.ENABLE_HTTPS) {
 
 app.use("/api", apiRouter);
 systemEndpoints(apiRouter);
+try {
+  console.log("[SERVER] Loading auth endpoints...");
+  authEndpoints(apiRouter);
+  console.log("[SERVER] Auth endpoints loaded successfully");
+} catch (error) {
+  console.error("[SERVER] Error loading auth endpoints:", error);
+}
 extensionEndpoints(apiRouter);
 workspaceEndpoints(apiRouter);
 workspaceThreadEndpoints(apiRouter);

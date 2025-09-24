@@ -102,7 +102,7 @@ export default function OllamaLLMOptions({ settings }) {
                 type="url"
                 name="OllamaLLMBasePath"
                 className="border-none bg-theme-settings-input-bg text-white placeholder:text-theme-settings-input-placeholder text-sm rounded-lg focus:outline-primary-button active:outline-primary-button outline-none block w-full p-2.5"
-                placeholder="http://127.0.0.1:11434"
+                placeholder="http://nginx:8080"
                 value={basePathValue.value}
                 required={true}
                 autoComplete="off"

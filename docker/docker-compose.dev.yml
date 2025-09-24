@@ -1,0 +1,51 @@
+name: anythingllm-dev
+
+networks:
+  devnet:
+    driver: bridge
+
+services:
+  backend:
+    build:
+      context: ../server
+      dockerfile: Dockerfile.dev
+    container_name: anythingllm-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      ANYTHING_LLM_RUNTIME: docker
+      STORAGE_DIR: /app/storage
+      ALLOW_ORIGINS: "http://localhost:3000,http://127.0.0.1:3000"
+      OLLAMA_BASE_URL: "http://host.docker.internal:11434" # Updated for host access
+      DEBUG: "*"
+    volumes:
+      - ../server:/app/server
+      - ./storage:/app/storage
+      - ../collector/hotdir:/app/collector/hotdir
+      - ../collector/outputs:/app/collector/outputs
+    networks:
+      - devnet
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # Required for host access
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.dev
+    container_name: anythingllm-frontend
+    restart: unless-stopped
+    ports:
+      - " 3000:3000"
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: "http://localhost:3001"
+    volumes:
+      - ../frontend:/app/frontend
+      - /app/frontend/node_modules
+
+    networks:
+      - devnet

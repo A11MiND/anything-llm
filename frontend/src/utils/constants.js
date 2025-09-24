@@ -10,11 +10,7 @@ export const SEEN_WATCH_ALERT = "anythingllm_watched_document_alert";
 
 export const APPEARANCE_SETTINGS = "anythingllm_appearance_settings";
 
-export const OLLAMA_COMMON_URLS = [
-  "http://127.0.0.1:11434",
-  "http://host.docker.internal:11434",
-  "http://172.17.0.1:11434",
-];
+export const OLLAMA_COMMON_URLS = ["http://nginx:8080"];
 
 export const LMSTUDIO_COMMON_URLS = [
   "http://localhost:1234/v1",

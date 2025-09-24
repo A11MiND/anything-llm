@@ -92,6 +92,7 @@ const SystemPromptVariables = lazy(
 const MobileConnections = lazy(
   () => import("@/pages/GeneralSettings/MobileConnections")
 );
+const HKDSEHub = lazy(() => import("@/pages/HKDSEHub"));
 
 export default function App() {
   return (
@@ -103,6 +104,10 @@ export default function App() {
               <I18nextProvider i18n={i18n}>
                 <Routes>
                   <Route path="/" element={<PrivateRoute Component={Main} />} />
+                  <Route
+                    path="/hkdse-hub"
+                    element={<PrivateRoute Component={HKDSEHub} />}
+                  />
                   <Route path="/login" element={<Login />} />
                   <Route
                     path="/sso/simple"

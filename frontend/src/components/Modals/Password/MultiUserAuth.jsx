@@ -8,6 +8,8 @@ import { useModal } from "@/hooks/useModal";
 import RecoveryCodeModal from "@/components/Modals/DisplayRecoveryCodeModal";
 import { useTranslation } from "react-i18next";
 import { t } from "i18next";
+import RegistrationForm from "./RegistrationForm";
+import Auth from "@/models/auth";
 
 const RecoveryForm = ({ onSubmit, setShowRecoveryForm }) => {
   const [username, setUsername] = useState("");
@@ -176,6 +178,8 @@ export default function MultiUserAuth() {
   const [showRecoveryForm, setShowRecoveryForm] = useState(false);
   const [showResetPasswordForm, setShowResetPasswordForm] = useState(false);
   const [customAppName, setCustomAppName] = useState(null);
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const [registrationEnabled, setRegistrationEnabled] = useState(false);
 
   const {
     isOpen: isRecoveryCodeModalOpen,
@@ -267,11 +271,39 @@ export default function MultiUserAuth() {
     fetchCustomAppName();
   }, []);
 
+  useEffect(() => {
+    const checkRegistrationEnabled = async () => {
+      try {
+        const { enabled } = await Auth.isRegistrationEnabled();
+        setRegistrationEnabled(enabled);
+      } catch (error) {
+        console.error("Failed to check registration status:", error);
+        setRegistrationEnabled(false);
+      }
+    };
+    checkRegistrationEnabled();
+  }, []);
+
   if (showRecoveryForm) {
     return (
       <RecoveryForm
         onSubmit={handleRecoverySubmit}
         setShowRecoveryForm={setShowRecoveryForm}
+      />
+    );
+  }
+
+  if (showRegistrationForm) {
+    return (
+      <RegistrationForm
+        onSwitchToLogin={() => setShowRegistrationForm(false)}
+        onRegistrationSuccess={(user) => {
+          setShowRegistrationForm(false);
+          showToast(
+            "Account created successfully! You can now log in.",
+            "success"
+          );
+        }}
       />
     );
   }
@@ -341,6 +373,16 @@ export default function MultiUserAuth() {
               {t("login.multi-user.forgot-pass")}?
               <b>{t("login.multi-user.reset")}</b>
             </button>
+
+            {registrationEnabled && (
+              <button
+                type="button"
+                className="text-theme-text-secondary text-sm hover:text-theme-text-primary transition-colors"
+                onClick={() => setShowRegistrationForm(true)}
+              >
+                {t("login.registration.dont-have-account")}
+              </button>
+            )}
           </div>
         </div>
       </form>

@@ -130,6 +130,24 @@ const TRANSLATIONS = {
       "recovery-code": "Recovery Code {{index}}",
       "back-to-login": "Back to Login",
     },
+    registration: {
+      title: "Create New Account",
+      description: "Sign up for a new AnythingLLM account",
+      username: "Username",
+      password: "Password",
+      "confirm-password": "Confirm Password",
+      "create-account": "Create Account",
+      "creating-account": "Creating Account...",
+      "account-created": "Account Created Successfully!",
+      "account-created-message":
+        "Your account has been created. You can now log in with your credentials.",
+      redirecting: "Redirecting to login...",
+      "already-have-account": "Already have an account? Sign in",
+      "dont-have-account": "Don't have an account? Sign up",
+      "username-requirements":
+        "Username must only contain lowercase letters, periods, numbers, underscores, and hyphens with no spaces",
+      "password-requirements": "Password must be at least 8 characters long",
+    },
   },
 
   welcomeMessage: {
